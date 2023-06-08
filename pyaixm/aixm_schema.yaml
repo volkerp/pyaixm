@@ -1,0 +1,1409 @@
+##############
+##  Shared  ##
+##############
+
+PropertiesWithSchedule: &PropertiesWithSchedule
+  specialDateAuthority: OrganisationAuthority
+  timeInterval: Timesheet
+
+AircraftCharacteristic:
+  type: CodeAircraftType
+  engine: CodeAircraftEngineType
+  numberEngine: CodeAircraftEngineNumberType
+  typeAircraftICAO: CodeAircraftICAOType
+  aircraftLandingCategory: CodeAircraftCategoryType
+  wingSpan: ValDistanceType
+  wingSpanInterpretation: CodeValueInterpretationType
+  classWingSpan: CodeAircraftWingspanClassType
+  weight: ValWeightType
+  weightInterpretation: CodeValueInterpretationType
+  passengers: NoNumberType
+  passengersInterpretation: CodeValueInterpretationType
+  speed: ValSpeedType
+  speedInterpretation: CodeValueInterpretationType
+  wakeTurbulence: CodeWakeTurbulenceType
+  navigationEquipment: CodeNavigationEquipmentType
+  navigationSpecification: CodeNavigationSpecificationType
+  verticalSeparationCapability: CodeRVSMType
+  antiCollisionAndSeparationEquipment: CodeEquipmentAntiCollisionType
+  communicationEquipment: CodeCommunicationModeType
+  surveillanceEquipment: CodeTransponderType
+
+AirspaceLayer:
+  upperLimit: ValDistanceVerticalType
+  upperLimitReference: CodeVerticalReferenceType
+  lowerLimit: ValDistanceVerticalType
+  lowerLimitReference: CodeVerticalReferenceType
+  altitudeInterpretation: CodeAltitudeUseType
+
+AltitudeAdjustment:
+  altitudeAdjustmentType: CodeAltitudeAdjustmentType
+  primaryAlternateMinimum: CodeYesNoType
+  altitudeAdjustment: ValDistanceVerticalType
+  localRemoteCode: CodeYesNoType
+
+CircleSector:
+  arcDirection: CodeArcDirectionType
+  fromAngle: ValBearingType
+  toAngle: ValBearingType
+  angleType: CodeBearingType
+  angleDirectionReference: CodeDirectionReferenceType
+  innerDistance: ValDistanceType
+  outerDistance: ValDistanceType
+  upperLimit: ValDistanceVerticalType
+  upperLimitReference: CodeVerticalReferenceType
+  lowerLimit: ValDistanceVerticalType
+  lowerLimitReference: CodeVerticalReferenceType
+
+EquipmentChoice:
+  navaidEquipment: NavaidEquipment
+  specialNavigationStation: SpecialNavigationStation
+  frequency: RadioCommunicationChannel
+  precisionApproachRadar: PrecisionApproachRadar
+  radar: SecondarySurveillanceRadar
+
+FlightCharacteristic:
+  type: CodeFlightType
+  rule: CodeFlightRuleType
+  status: CodeFlightStatusType
+  military: CodeMilitaryStatusType
+  origin: CodeFlightOriginType
+  purpose:  CodeFlightPurposeType
+
+HoldingAssessment:
+  upperLimit: ValDistanceVerticalType
+  upperLimitReference: CodeVerticalReferenceType
+  lowerLimit: ValDistanceVerticalType
+  lowerLimitReference: CodeVerticalReferenceType
+  speedLimit: ValSpeedType
+  patternTemplate: TextNameType
+  turbulentAir: CodeYesNoType
+  legLengthToward: ValDistanceType
+  legLengthAway: ValDistanceType
+  assessedHoldingPattern: HoldingPattern
+  unplannedHolding: UnplannedHolding
+  holdingPoint: SegmentPoint
+  annotation: Note
+  obstacleAssessment: ObstacleAssessmentArea
+
+LightElement:
+  colour: CodeColourType
+  intensityLevel: CodeLightIntensityType
+  intensity: ValLightIntensityType
+  type: CodeLightSourceType
+  location: ElevatedPoint
+  availability: LightElementStatus
+
+LightElementStatus:
+  <<: *PropertiesWithSchedule
+  status: CodeStatusOperationsType
+
+LinguisticNote:
+  note: TextNoteType
+
+Meteorology:
+  flightConditions: CodeMeteoConditionsType
+  visibility: ValDistanceType
+  visibilityInterpretation: CodeValueInterpretationType
+  runwayVisualRange: ValDistanceType
+  runwayVisualRangeInterpretation: CodeValueInterpretationType
+
+Note:
+  propertyName: TextPropertyNameType
+  purpose: CodeNotePurposeType
+  translatedNote: LinguisticNote
+
+ObstacleAssessmentArea:
+  type: CodeObstacleAssessmentSurfaceType
+  sectionNumber: NoNumberType
+  slope: ValSlopeType
+  assessedAltitude: ValDistanceVerticalType
+  slopeLowerAltitude: ValDistanceVerticalType
+  gradientLowHigh: ValSlopeType
+  surfaceZone: CodeObstructionIdSurfaceZoneType
+  safetyRegulation: TextNameType
+  startingCurve: Curve
+  surface: Surface
+  annotation: Note
+  aircraftCategory: AircraftCharacteristic
+  significantObstacle: Obstruction
+
+ObstaclePlacement:
+  obstacleBearing: ValBearingType
+  obstacleDistance: ValDistanceType
+  pointType: TextNameType
+  obstaclePlacement: CodeSideType
+
+Obstruction:
+  requiredClearance: ValDistanceType
+  minimumAltitude: ValDistanceVerticalType
+  surfacePenetration: CodeYesNoType
+  slopePenetration: ValAngleType
+  controlling: CodeYesNoType
+  closeIn: CodeYesNoType
+  annotation: Note
+  theVerticalStructure: VerticalStructure
+  adjustment: AltitudeAdjustment
+  obstaclePlacement: ObstaclePlacement
+
+OnlineContact:
+  network: CodeTelecomNetworkType
+  linkage: TextAddressType
+  protocol: TextNameType
+  eMail: TextAddressType
+
+RadioFrequencyArea:
+  type: CodeRadioFrequencyAreaType
+  angleScallop: ValAngleType
+  signalType: CodeRadioSignalType
+  extent: Surface
+  sector: CircleSector
+  equipment: EquipmentChoice
+
+PostalAddress:
+  deliveryPoint: TextAddressType
+  city: TextNameType
+  administrativeArea: TextNameType
+  postalCode: TextNameType
+  country: TextNameType
+
+SpecialDate:
+  type: CodeSpecialDateType
+  dateDay: DateMonthDayType
+  dateYear: DateYearType
+  name: TextNameType
+
+StandardLevel:
+  verticalDistance: ValDistanceVerticalType
+
+StandardLevelColumn:
+  separation: CodeRVSMType
+  series: CodeLevelSeriesType
+  unitOfMeasurement: CodeDistanceVerticalUomType
+  annotation: Note
+  level: StandardLevel
+  levelTable: StandardLevelTable
+
+StandardLevelSector:
+  flightRule: CodeFlightRuleType
+  fromTrack: ValBearingType
+  toTrack: ValBearingType
+  angleType: CodeNorthReferenceType
+
+StandardLevelTable:
+  name: CodeLevelTableDesignatorType
+  standardICAO: CodeYesNoType
+
+TelephoneContact:
+  voice: TextPhoneType
+  facsimile: TextPhoneType
+
+Timesheet:
+  timeReference: CodeTimeReferenceType
+  startDate: DateMonthDayType
+  endDate: DateMonthDayType
+  day: CodeDayType
+  dayTil: CodeDayType
+  startTime: TimeType
+  startEvent: CodeTimeEventType
+  startTimeRelativeEvent: ValDurationType
+  startEventInterpretation: CodeTimeEventCombinationType
+  endTime: TimeType
+  endEvent: CodeTimeEventType
+  endTimeRelativeEvent: ValDurationType
+  endEventInterpretation: CodeTimeEventCombinationType
+  daylightSavingAdjust: CodeYesNoType
+  excluded: CodeYesNoType
+
+# SegmentPoint is defined in Navaid Points
+SegmentPoint: &SegmentPoint
+  reportingATC: CodeATCReportingType
+  flyOver:  CodeYesNoType
+  waypoint: CodeYesNoType
+  radarGuidance: CodeYesNoType
+  facilityMakeup: PointReference
+  extendedServiceVolume: RadioFrequencyArea
+  pointChoice: SignificantPoint
+
+#########################
+##  Aerial Refuelling  ##
+#########################
+
+AerialRefuelling:
+  designatorPrefix: CodeAerialRefuellingPrefixType
+  designatorNumber: NoNumberType
+  designatorSuffix: TextDesignatorType
+  designatorDirection: CodeCardinalDirectionType
+  name: TextNameType
+  type: CodeAerialRefuellingType
+  radarBeaconSetting: NoNumberType
+  xbandRadarSetting: NoNumberType
+  tankerChannel: CodeTACANChannelType
+  receiverChannel: CodeTACANChannelType
+  helicopterRoute: CodeYesNoType
+  specialRefuelling: CodeYesNoType
+  bidirectionalUse: CodeYesNoType
+  reverseDirectionTurn: CodeDirectionTurnType
+  oppositeTrack: AerialRefuelling
+  track: AerialRefuellingTrack
+  managingOrganisation: OrganisationAuthority
+  availability: RouteAvailability
+  anchor: AerialRefuellingAnchor
+  annotation: Note
+  protectingAirspace: Airspace
+
+AerialRefuellingAnchor:
+  outboundCourse: ValBearingType
+  outboundCourseType: CodeCourseType
+  inboundCourse: ValBearingType
+  turnDirection: CodeDirectionTurnType
+  speedLimit: ValSpeedType
+  legSeparation: ValDistanceType
+  legLength: ValDistanceType
+  refuellingBaseLevel: ValDistanceVerticalType
+  refuellingBaseLevelReference: CodeVerticalReferenceType
+  verticalExtent: AirspaceLayer
+  extent: Surface
+  annotation: Note
+  point: AerialRefuellingPoint
+
+AerialRefuellingPoint:
+  <<: *SegmentPoint
+  sequence: NoSequenceType
+  usageType: CodeAerialRefuellingPointType
+
+AerialRefuellingTrack:
+  point: AerialRefuellingPoint
+  annotation: Note
+  extent: Curve
+  verticalExtent: AirspaceLayer
+
+AuthorityForAerialRefuelling:
+  type: CodeAuthorityType
+
+########################
+##  Airport Heliport  ##
+########################
+
+GroundLightSystem: &GroundLightSystem
+  emergencyLighting: CodeYesNoType
+  intensityLevel: CodeLightIntensityType
+  colour: CodeColourType
+  availability: GroundLightingAvailability
+  element: LightElement
+
+UsageCondition: &UsageCondition
+  type: CodeUsageLimitationType
+  priorPermission: ValDurationType
+  selection: ConditionCombination
+  annotation: Note
+  contact: ContactInformation
+
+AirportHeliport:
+  designator: CodeAirportHeliportDesignatorType
+  name: TextNameType
+  locationIndicatorICAO: CodeICAOType
+  designatorIATA: CodeIATAType
+  type: CodeAirportHeliportType
+  certifiedICAO: CodeYesNoType
+  privateUse: CodeYesNoType
+  controlType: CodeMilitaryOperationsType
+  fieldElevation: ValDistanceVerticalType
+  fieldElevationAccuracy: ValDistanceVerticalType
+  verticalDatum: CodeVerticalDatumType
+  magneticVariation: ValMagneticVariationType
+  magneticVariationAccuracy: ValAngleType
+  dateMagneticVariation: DateYearType
+  magneticVariationChange: ValMagneticVariationChangeType
+  referenceTemperature: ValTemperatureType
+  altimeterCheckLocation: CodeYesNoType
+  secondaryPowerSupply: CodeYesNoType
+  windDirectionIndicator: CodeYesNoType
+  landingDirectionIndicator: CodeYesNoType
+  transitionAltitude: ValDistanceVerticalType
+  transitionLevel: ValFLType
+  lowestTemperature: ValTemperatureType
+  abandoned: CodeYesNoType
+  certificationDate: DateType
+  certificationExpirationDate: DateType
+  contact:  ContactInformation
+  annotation: Note
+  ARP: ElevatedPoint
+  altimeterSource: AltimeterSource
+  contaminant: AirportHeliportContamination
+  servedCity: City
+  responsibleOrganisation: OrganisationAuthority
+  aviationBoundary: ElevatedSurface
+  availability: AirportHeliportAvailability
+
+AirportHeliportAvailability:
+  <<: *PropertiesWithSchedule
+  operationalStatus: CodeStatusAirportType
+  warning: CodeAirportWarningType
+  usage: AirportHeliportUsage
+
+AirportHeliportCollocation:
+  type: CodeAirportHeliportCollocationType
+  hostAirport: AirportHeliport
+  dependentAirport: AirportHeliport
+  annotation: Note
+
+AirportHeliportProtectionArea: &AirportHeliportProtectionArea
+  width: ValDistanceType
+  length: ValDistanceType
+  lighting: CodeYesNoType
+  obstacleFree: CodeYesNoType
+  annotation: Note
+  extent: ElevatedSurface
+  surfaceProperties: SurfaceCharacteristics
+
+AirportHeliportResponsibilityOrganisation:
+  <<: *PropertiesWithSchedule
+  role: CodeAuthorityRoleType
+
+AirportHeliportUsage:
+  <<: *UsageCondition
+  operation: CodeOperationAirportHeliportType
+
+AirportHotSpot:
+  designator: TextDesignatorType
+  instruction: TextInstructionType
+  affectedAirport: AirportHeliport
+  area: ElevatedSurface
+  annotation: Note
+
+AltimeterSource:
+  isRemote: CodeYesNoType
+  isPrimary: CodeYesNoType
+  availability: AltimeterSourceStatus
+  annotation: Note
+
+AltimeterSourceStatus:
+  <<: *PropertiesWithSchedule
+  operationalStatus: CodeStatusOperationsType
+
+AircraftStand:
+  designator: TextDesignatorType
+  type: CodeAircraftStandType
+  visualDockingSystem: CodeVisualDockingGuidanceType
+  surfaceProperties: SurfaceCharacteristics
+  availability: ApronAreaAvailability
+  apronLocation: ApronElement
+  location: ElevatedPoint
+  annotation: Note
+  contaminant: AircraftStandContamination
+  extent: ElevatedSurface
+
+ApproachLightingSystem:
+  <<: *GroundLightSystem
+  classICAO: CodeApproachLightingICAOType
+  type: CodeApproachLightingType
+  length: ValDistanceType
+  sequencedFlashing: CodeYesNoType
+  alignmentIndicator: CodeYesNoType
+  servedRunwayDirection: RunwayDirection
+
+Apron:
+  name: str
+  abandoned: str
+  associatedAirportHeliport: AirportHeliport
+  surfaceProperties: SurfaceCharacteristics
+  availability: ApronAreaAvailability
+  annotation: Note
+  contaminant: ApronContamination
+
+ApronAreaAvailability:
+  <<: *PropertiesWithSchedule
+  operationalStatus: CodeStatusAirportType
+  warning: CodeAirportWarningType
+  usage: ApronAreaUsage
+
+ApronAreaUsage:
+  <<: *UsageCondition
+  # no additional attributes
+
+ApronContamination:
+  observationTime: DateTimeType
+  depth: ValDepthType
+  frictionCoefficient: ValFrictionType
+  frictionEstimation: CodeFrictionEstimateType
+  frictionDevice: CodeFrictionDeviceType
+  obscuredLights: CodeYesNoType
+  furtherClearanceTime: TimeType
+  furtherTotalClearance: CodeYesNoType
+  nextObservationTime: DateTimeType
+  proportion: ValPercentType
+
+ApronElement:
+  type: CodeApronElementType
+  jetwayAvailability: CodeYesNoType
+  towingAvailability: CodeYesNoType
+  dockingAvailability: CodeYesNoType
+  groundPowerAvailability: CodeYesNoType
+  length: ValDistanceType
+  width: ValDistanceType
+  surfaceProperties: SurfaceCharacteristics
+  associatedApron: Apron
+  availability: ApronAreaAvailability
+  extent: ElevatedSurface
+  supplyService: AirportSuppliesService
+
+ApronLightSystem:
+  <<: *GroundLightSystem
+  position: CodeApronSectionType
+  lightedApron: Apron
+
+ApronMarking:
+  markingLocation: CodeApronSectionType
+  markingICAOStandard: CodeYesNoType
+  condition: CodeMarkingConditionType
+
+ArrestingGear:
+  status: CodeStatusOperationsType
+  length: ValDistanceType
+  width: ValDistanceType
+  engageDevice: CodeArrestingGearEngageDeviceType
+  absorbType: CodeArrestingGearEnergyAbsorbType
+  bidirectional: CodeYesNoType
+  location: ValDistanceType
+  surfaceProperties: SurfaceCharacteristics
+  runwayDirection: RunwayDirection
+  annotation: Note
+  extent: ArrestingGearExtent
+
+ArrestingGearExtent:
+  pointExtent: ElevatedPoint
+  curveExtent: ElevatedCurve
+  surfaceExtent: ElevatedSurface
+
+City:
+  name: TextNameType
+
+ConditionCombination:
+  <<: *PropertiesWithSchedule
+  logicalOperator: CodeLogicalOperatorType
+  flight: FlightCharacteristic
+  aircraft: AircraftCharacteristic
+  weather: Meteorology
+  subCondition: ConditionCombination
+
+DeicingArea:
+  surfaceProperties: SurfaceCharacteristics
+  standLocation: AircraftStand
+  associatedApron: Apron
+  availability: ApronAreaAvailability
+  annotation: Note
+  extent: ElevatedSurface
+  taxiwayLocation: Taxiway
+
+GroundLightingAvailability:
+  <<: *PropertiesWithSchedule
+  operationalStatus: CodeStatusOperationsType
+
+GuidanceLine:
+  designator: TextNameType
+  type: CodeGuidanceLineType
+  maxSpeed: ValSpeedType
+  usageDirection: CodeDirectionType
+  connectedStand: AircraftStand
+  connectedApron: Apron
+  connectedTouchDownLiftOff: TouchDownLiftOff
+  connectedRunwayCentrelinePoint: RunwayCentrelinePoint
+  annotation: Note
+  extent: ElevatedCurve
+  connectedTaxiway: Taxiway
+
+GuidanceLineLightSystem:
+  <<: *GroundLightSystem
+  lightedGuidanceLine: GuidanceLine
+
+GuidanceLineMarking:
+  markingICAOStandard: CodeYesNoType
+  condition: CodeMarkingConditionType
+
+LightActivation:
+  clicks: NoNumberType
+  intensityLevel: CodeLightIntensityType
+  activation: CodeSystemActivationType
+
+ManoeuvringAreaAvailability:
+  <<: *PropertiesWithSchedule
+  operationalStatus: CodeStatusAirportType
+  warning: CodeAirportWarningType
+  usage: ManoeuvringAreaUsage
+
+ManoeuvringAreaUsage:
+  <<: *UsageCondition
+  operation: CodeOperationManoeuvringAreaType
+
+NavaidEquipmentDistance:
+  distance: ValDistanceType
+  distanceAccuracy: ValDistanceType
+
+NonMovementArea:
+  associatedAirportHeliport: AirportHeliport
+  annotation: Note
+  extent: ElevatedSurface
+
+PassengerLoadingBridge:
+  type: CodeLoadingBridgeType
+  associatedStand: AircraftStand
+  extent: ElevatedSurface
+  annotation: Note
+
+Road:
+  designator: TextNameType
+  status: CodeStatusOperationsType
+  type: CodeRoadType
+  abandoned: CodeYesNoType
+  associatedAirport: AirportHeliport
+  surfaceProperties: SurfaceCharacteristics
+  accessibleStand: AircraftStand
+  surfaceExtent: ElevatedSurface
+
+Runway:
+  designator: TextDesignatorType
+  type: CodeRunwayType
+  nominalLength: ValDistanceType
+  lengthAccuracy: ValDistanceType
+  nominalWidth: ValDistanceType
+  widthAccuracy: ValDistanceType
+  widthShoulder: ValDistanceType
+  lengthStrip: ValDistanceType
+  widthStrip: ValDistanceType
+  lengthOffset: ValDistanceSignedType
+  widthOffset: ValDistanceSignedType
+  abandoned: CodeYesNoType
+  associatedAirportHeliport: AirportHeliport
+  surfaceProperties: SurfaceCharacteristics
+  annotation: Note
+  overallContaminant: RunwayContamination
+  areaContaminant: RunwaySectionContamination
+
+RunwayCentreLinePoint:
+  role: CodeRunwayPointRoleType
+  designator: TextDesignatorType
+  location: ElevatedPoint
+  navaidEquipment: NavaidEquipment
+  associatedDeclaredDistance: RunwayDeclaredDistance
+  onRunway: RunwayDirection
+
+RunwayDeclaredDistance:
+  type: CodeDeclaredDistanceType
+
+RunwayDeclaredDistanceValue:
+  distance: ValDistanceType
+  distanceAccuracy: ValDistanceType
+
+RunwayDirection:
+  designator: TextDesignatorType
+  trueBearing: ValBearingType
+  trueBearingAccuracy: ValAngleType
+  magneticBearing: ValBearingType
+  patternVFR: CodeDirectionTurnType
+  slopeTDZ: ValSlopeType
+  elevationTDZ: ValDistanceVerticalType
+  elevationTDZAccuracy: ValDistanceType
+  approachMarkingType: CodeRunwayMarkingType
+  approachMarkingCondition: CodeMarkingConditionType
+  classLightingJAR: CodeLightingJARType
+  precisionApproachGuidance: CodeApproachGuidanceType
+  availability: ManoeuvringAreaAvailability
+  usedRunway: Runway
+  annotation: Note
+  startingElement: RunwayElement
+
+RunwayDirectionLightSystem:
+  <<: *GroundLightSystem
+  position: CodeRunwaySectionType
+  associatedRunwayDirection: RunwayDirection
+
+RunwayElement:
+  type: CodeRunwayElementType
+  length: ValDistanceType
+  width: ValDistanceType
+  gradeSeparation: CodeGradeSeparationType
+  surfaceProperties: SurfaceCharacteristics
+  availability: ManoeuvringAreaAvailability
+  associatedRunway: Runway
+  extent: ElevatedSurface
+
+RunwayBlastPad:
+  length: ValDistanceType
+  status: CodeStatusOperationsType
+  surfaceProperties: SurfaceCharacteristics
+  extent: ElevatedSurface
+  annotation: Note
+  usedRunwayDirection: RunwayDirection
+
+RunwayProtectArea:
+  <<: *AirportHeliportProtectionArea
+  type: CodeRunwayProtectionAreaType
+  status: CodeStatusOperationsType
+  protectedRunwayDirection: RunwayDirection
+
+RunwayProtectAreaLightSystem:
+  <<: *GroundLightSystem
+  position: CodeProtectAreaSectionType
+  lightedArea: RunwayProtectArea
+
+SurfaceCharacteristics:
+  composition: CodeSurfaceCompositionType
+  preparation: CodeSurfacePreparationType
+  surfaceCondition: CodeSurfaceConditionType
+  classPCN: ValPCNType
+  pavementTypePCN: CodePCNPavementType
+  pavementSubgradePCN: CodePCNSubgradeType
+  maxTyrePressurePCN: CodePCNTyrePressureType
+  evaluationMethodPCN: CodePCNMethodType
+  classLCN: ValLCNType
+  weightSIWL: ValWeightType
+  tyrePressureSIWL: ValPressureType
+  weightAUW: ValWeightType
+
+SurveyControlPoint:
+  designator: TextNameType
+  associatedAirportHeliport: AirportHeliport
+  location: ElevatedPoint
+  annotation: Note
+
+Taxiway:
+  designator: TextDesignatorType
+  type: CodeTaxiwayType
+  width: ValDistanceType
+  widthShoulder: ValDistanceType
+  length: ValDistanceType
+  abandoned: CodeYesNoType
+  associatedAirportHeliport: AirportHeliport
+  surfaceProperties: SurfaceCharacteristics
+  availability: ManoeuvringAreaAvailability
+  contaminant: TaxiwayContamination
+  annotation: Note
+
+TaxiHoldingPosition:
+  landingCategory: CodeHoldingCategoryType
+  status: CodeStatusOperationsType
+  protectedRunway: Runway
+  associatedGuidanceLine: GuidanceLine
+  annotation: Note
+  location: ElevatedPoint
+
+TaxiHoldingPositionLightSystem:
+  <<: *GroundLightSystem
+  type: CodeLightHoldingPositionType
+  taxiHolding: TaxiHoldingPosition
+
+TaxiwayElement:
+  type: CodeTaxiwayElementType
+  length: ValDistanceType
+  width: ValDistanceType
+  gradeSeparation: CodeGradeSeparationType
+  surfaceProperties: SurfaceCharacteristics
+  availability: ManoeuvringAreaAvailability
+  associatedTaxiway: Taxiway
+  annotation: Note
+  extent: ElevatedSurface
+
+TaxiwayLightSystem:
+  <<: *GroundLightSystem
+  position: CodeTaxiwaySectionType
+  lightedTaxiway: Taxiway
+
+TouchDownLiftOff:
+  designator: TextDesignatorType
+  length: ValDistanceType
+  width: ValDistanceType
+  slope: ValSlopeType
+  helicopterClass: CodeHelicopterPerformanceType
+  abandoned: CodeYesNoType
+
+TouchDownLiftOffLightSystem:
+  <<: *GroundLightSystem
+  position: CodeTLOFSectionType
+  lightedTouchDownLiftOff: TouchDownLiftOff
+
+TouchDownLiftOffSafeArea:
+  <<: *AirportHeliportProtectionArea
+  protectedTouchDownLiftOff: TouchDownLiftOff
+
+WorkArea:
+  type: CodeWorkAreaType
+  plannedOperational: DateType
+  associatedAirportHeliport: AirportHeliport
+  annotation: Note
+  activation: WorkareaActivity
+  extent: ElevatedSurface
+
+WorkareaActivity:
+  <<: *PropertiesWithSchedule
+  isActive: CodeYesNoType
+
+##############
+## Airspace ##
+##############
+
+Airspace:
+  type: CodeAirspaceType
+  designator: CodeAirspaceDesignatorType
+  localType: TextNameType
+  name: TextNameType
+  designatorICAO: CodeYesNoType
+  controlType: CodeMilitaryOperationsType
+  upperLowerSeparation: ValFLType
+  alclass: AirspaceLayerClass
+  protectedRoute: Route
+  activation: AirspaceActivation
+  annotation: Note
+  geometryComponent: AirspaceVolume
+
+AirspaceActivation:
+  <<: *PropertiesWithSchedule
+  activity: CodeAirspaceActivityType
+  status: CodeStatusAirspaceType
+  user: OrganisationAuthority
+  aircraft: AircraftCharacteristic
+  levels: AirspaceLayer
+
+AirspaceGeometryComponent:
+  operation: CodeAirspaceAggregationType
+  operationSequence: NoSequenceType
+
+AirspaceLayerClass:
+  <<: *PropertiesWithSchedule
+  classification: CodeAirspaceClassificationType
+  associatedLevels: AirspaceLayer
+
+AirspaceVolume:
+  upperLimit: ValDistanceVerticalType
+  upperLimitReference: CodeVerticalReferenceType
+  maximumLimit: ValDistanceVerticalType
+  maximumLimitReference: CodeVerticalReferenceType
+  lowerLimit: ValDistanceVerticalType
+  lowerLimitReference: CodeVerticalReferenceType
+  minimumLimit: ValDistanceVerticalType
+  minimumLimitReference: CodeVerticalReferenceType
+  width: ValDistanceType
+  contributorAirspace: Airspace
+  horizontalProjection: Surface
+  centreline: Curve
+  annotation: Note
+
+AirspaceVolumeDependency:
+  dependency: CodeAirspaceDependencyType
+
+AuthorityForAirspace:
+  type: CodeAuthorityType
+  assignedAirspace: Airspace
+  annotation: Note
+  responsibleOrganisation: OrganisationAuthority
+
+GeoBorder:
+  name: TextNameType
+  type: CodeGeoBorderType
+  annotation: Note
+  border: Curve
+
+AngleIndication:
+  angle: ValBearingType
+  angleType: CodeBearingType
+  indicationDirection: CodeDirectionReferenceType
+  trueAngle: ValBearingType
+  cardinalDirection: CodeCardinalDirectionType
+  minimumReceptionAltitude: ValDistanceVerticalType
+
+AngleUse:
+  alongCourseGuidance: CodeYesNoType
+
+ContactInformation:
+  name: TextNameType
+  title: TextNameType
+  networkNode: OnlineContact
+  address: PostalAddress
+  phoneFax: TelephoneContact
+
+ElevatedPoint:
+  pos: str
+  elevation: str
+  geoidUndulation: str
+  verticalDatum: str
+  verticalAccuracy: str
+  horizontalAccuracy: str
+
+ElevatedSurface:
+  elevation: ValDistanceVerticalType
+  geoidUndulation: ValDistanceSignedType
+  verticalDatum: CodeVerticalDatumType
+  verticalAccuracy: ValDistanceType
+  horizontalAccuracy: ValDistanceType
+  patches: Polygon Patch
+
+EnRouteSegmentPoint: #*SegmentPoint
+  roleFreeFlight: CodeFreeFlightType
+  roleRVSM: CodeRVSMPointRoleType
+  turnRadius: ValDistanceType
+  roleMilitaryTraining: CodeMilitaryRoutePointType
+  reportingATC: CodeATCReportingType
+  flyOver: CodeYesNoType
+  waypoint: CodeYesNoType
+  radarGuidance: CodeYesNoType
+
+PointReference:
+  role: CodeReferenceRoleType
+  priorFixTolerance: ValDistanceSignedType
+  postFixTolerance: ValDistanceSignedType
+
+RunwayVisualRange:
+  readingPosition: CodeRVRReadingType
+  associatedRunwayDirection: RunwayDirection
+  location: ElevatedPoint
+  annotation: Note
+
+TaxiwayMarking:
+  markingLocation: CodeApronSectionType
+  markingICAOStandard: CodeYesNoType
+  condition: CodeMarkingConditionType
+
+TerminalSegmentPoint: #*SegmentPoint
+  role: CodeProcedureFixRoleType
+  leadRadial: ValBearingType
+  leadDME: ValDistanceType
+  indicatorFACF: CodeYesNoType
+  reportingATC: CodeATCReportingType
+  flyOver: CodeYesNoType
+  waypoint: CodeYesNoType
+  radarGuidance: CodeYesNoType
+
+VerticalStructure:
+  name: TextNameType
+  type: CodeVerticalStructureType
+  lighted: CodeYesNoType
+  markingICAOStandard: CodeYesNoType
+  group: CodeYesNoType
+  length: ValDistanceType
+  width: ValDistanceType
+  radius: ValDistanceType
+  lightingICAOStandard: CodeYesNoType
+  synchronisedLighting: CodeYesNoType
+  supportedGroundLight: GroundLightSystem
+  marker: MarkerBeacon
+  hostedNavaidEquipment: NavaidEquipment
+  hostedSpecialNavStation: SpecialNavigationStation
+  annotation: Note
+  hostedPassengerService: PassengerService
+  supportedService: Service
+  hostedOrganisation: OrganisationAuthority
+  lightingAvailability: VerticalStructureLightingStatus
+  hostedUnit: Unit
+  part: VerticalStructurePart
+
+VisualGlideSlopeIndicator:
+  <<: *GroundLightSystem
+  type: CodeVASISType
+  position: CodeSideType
+  numberBox: NoNumberType
+  portable: CodeYesNoType
+  slopeAngle: ValAngleType
+  minimumEyeHeightOverThreshold: ValDistanceVerticalType
+  runwayDirection: RunwayDirection
+
+######################
+##  Navaids Points  ##
+######################
+
+NavaidEquipment: &NavaidEquipment
+  designator: CodeNavaidDesignatorType
+  name: TextNameType
+  emissionClass: CodeRadioEmissionType
+  mobile: CodeYesNoType
+  magneticVariation: ValMagneticVariationType
+  magneticVariationAccuracy: ValAngleType
+  dateMagneticVariation: DateYearType
+  flightChecked: CodeYesNoType
+  location: ElevatedPoint
+  monitoring: NavaidEquipmentMonitoring
+  annotation: Note
+  authority: OrganisationAuthority
+  availability: NavaidOperationalStatus
+
+NavigationSystemCheckpoint: &NavigationSystemCheckpoint
+  category: CodeCheckpointCategoryType
+  upperLimit: ValDistanceVerticalType
+  upperLimitReference: CodeVerticalReferenceType
+  lowerLimit: ValDistanceVerticalType
+  lowerLimitReference: CodeVerticalReferenceType
+  altitudeInterpretation: CodeAltitudeUseType
+  distance: ValDistanceType
+  angle: ValBearingType
+  airportHeliport: AirportHeliport
+  position: ElevatedPoint
+
+AeronauticalGroundLight:
+  name: TextNameType
+  type: CodeGroundLightingType
+  colour: CodeColourType
+  flashing: CodeYesNoType
+
+AuthorityForNavaidEquipment:
+  type: CodeAuthorityRoleType
+
+AuthorityForSpecialNavigationStation:
+  type: CodeAuthorityRoleType
+
+AuthorityForSpecialNavigationSystem:
+  type: CodeAuthorityRoleType
+
+Azimuth:
+  <<: *NavaidEquipment
+  type: CodeMLSAzimuthType
+  trueBearing: ValBearingType
+  trueBearingAccuracy: ValAngleType
+  magneticBearing: ValBearingType
+  angleProportionalLeft: ValAngleType
+  angleProportionalRight: ValAngleType
+  angleCoverLeft: ValAngleType
+  angleCoverRight: ValAngleType
+  channel: CodeMLSChannelType
+
+CheckpointINS:
+   <<: *NavigationSystemCheckpoint
+   # no additional attributes
+
+CheckpointVOR: #*NavigationSystemCheckpoint
+  <<: *NavigationSystemCheckpoint
+  checkPointFacility: VOR
+
+DesignatedPoint:
+  designator: CodeDesignatedPointDesignatorType
+  type: CodeDesignatedPointType
+  name: TextNameType
+
+DME:
+  <<: *NavaidEquipment
+  type: CodeDMEType
+  channel: CodeDMEChannelType
+  ghostFrequency: ValFrequencyType
+  displace: ValDistanceType
+
+DirectionFinder:
+  <<: *NavaidEquipment
+  doppler: CodeYesNoType
+  informationProvision: InformationService
+
+DistanceIndication:
+  distance: ValDistanceType
+  minimumReceptionAltitude: ValDistanceVerticalType
+  type: CodeDistanceIndicationType
+
+Elevation:
+  <<: *NavaidEquipment
+  angleNominal: ValAngleType
+  angleMinimum: ValAngleType
+  angleSpan:  ValAngleType
+  angleAccuracy:  ValAngleType
+
+Glidepath:
+  <<: *NavaidEquipment
+  frequency: ValFrequencyType
+  slope: ValAngleType
+  angleAccuracy: ValAngleType
+  rdh: ValDistanceVerticalType
+  rdhAccuracy: ValDistanceVerticalType
+
+GuidanceService:
+  navaid: Navaid
+  radar: RadarSystem
+  specialNavigationSystem: SpecialNavigationSystem
+
+Localizer:
+  <<: *NavaidEquipment
+  frequency: ValFrequencyType
+  magneticBearing: ValBearingType
+  magneticBearingAccuracy: ValAngleType
+  trueBearing: ValBearingType
+  trueBearingAccuracy: ValAngleType
+  declination: ValMagneticVariationType
+  widthCourse: ValAngleType
+  widthCourseAccuracy: ValAngleType
+  backCourseUsable: CodeILSBackCourseType
+
+MarkerBeacon:
+  <<: *NavaidEquipment
+  # 'class' renamed to classmb
+  classmb: CodeMarkerBeaconSignalType
+  frequency: ValFrequencyType
+  axisBearing: ValBearingType
+  auralMorseCode: CodeAuralMorseType
+
+NDB:
+  <<: *NavaidEquipment
+  frequency: ValFrequencyType
+  # 'class' renamed to classndb
+  classndb: CodeNDBUsageType
+  emissionBand: CodeEmissionBandType
+
+Navaid:
+  type: CodeNavaidServiceType
+  designator: CodeNavaidDesignatorType
+  name: TextNameType
+  flightChecked: CodeYesNoType
+  purpose: CodeNavaidPurposeType
+  signalPerformance: CodeSignalPerformanceILSType
+  courseQuality: CodeCourseQualityILSType
+  integrityLevel: CodeIntegrityLevelILSType
+  servedAirport: AirportHeliport
+  touchDownLiftOff: TouchDownLiftOff
+  runwayDirection: RunwayDirection
+  location: ElevatedPoint
+  navaidEquipment: NavaidEquipment
+  availability: NavaidOperationalStatus
+
+NavaidComponent:
+  collocationGroup: NoSequenceType
+  markerPosition: CodePositionInILSType
+  providesNavigableLocation: CodeYesNoType
+
+NavaidEquipmentMonitoring:
+  <<: *PropertiesWithSchedule
+  monitored: CodeYesNoType
+
+NavaidOperationalStatus:
+  <<: *PropertiesWithSchedule
+  operationalStatus: CodeStatusNavaidType
+  signalType: CodeRadioSignalType
+
+SDF:
+  <<: *NavaidEquipment
+  frequency: ValFrequencyType
+  magneticBearing: ValBearingType
+  trueBearing: ValBearingType
+
+SignificantPoint:
+  airportReferencePoint: AirportHeliport
+  aimingPoint: TouchDownLiftOff
+  runwayPoint: RunwayCentrelinePoint
+  position: Point
+  navaidSystem: Navaid
+  fixDesignatedPoint: DesignatedPoint
+
+SignificantPointInAirspace:
+  type: CodeAirspacePointRoleType
+  relativeLocation: CodeAirspacePointPositionType
+  containingAirspace: Airspace
+  location: SignificantPoint
+  annotation: Note
+
+SpecialNavigationStation:
+  name: TextNameType
+  type: CodeSpecialNavigationStationType
+  frequency: ValFrequencyType
+  emission: CodeRadioEmissionType
+  position: ElevatedPoint
+  availability: SpecialNavigationStationStatus
+  responsibleOrganisation: OrganisationAuthority
+  systemChain: SpecialNavigationSystem
+
+SpecialNavigationStationStatus:
+  <<: *PropertiesWithSchedule
+  operationalStatus: CodeStatusNavaidType
+
+SpecialNavigationSystem:
+  type: CodeSpecialNavigationSystemType
+  designator: CodeSpecialNavigationChainDesignatorType
+  name: TextNameType
+
+TACAN:
+  <<: *NavaidEquipment
+  channel: CodeTACANChannelType
+  declination: ValMagneticVariationType
+
+VOR:
+  <<: *NavaidEquipment
+  type: CodeVORType
+  frequency: ValFrequencyType
+  zeroBearingDirection: CodeNorthReferenceType
+  declination: ValMagneticVariationType
+
+####################
+##  Organization  ##
+####################
+
+OrganisationAuthority:
+  name: TextNameType
+  designator: CodeOrganisationDesignatorType
+  type: CodeOrganisationType
+  militay: CodeMilitaryOperationsType
+
+OrganisationAuthorityAssociation:
+  type: CodeOrganisationHierarchyType
+
+Unit:
+  name: TextNameType
+  type: CodeUnitType
+  compliantICAO: CodeYesNoType
+  designator: CodeOrganisationDesignatorType
+  military: CodeMilitaryOperationsType
+  airportLocation: AirportHeliport
+  position: ElevatedPoint
+  annotation: Note
+  ownerOrganisation: OrganisationAuthority
+  contact: ContactInformation
+  availability: UnitAvailability
+  relatedUnit: Unit
+
+UnitAvailability:
+  <<: *PropertiesWithSchedule
+  operationalStatus: CodeStatusOperationsType
+
+UnitDependency:
+  type: CodeUnitDependencyType
+
+############
+## Routes ##
+############
+
+AirspaceBorderCrossing:
+  exitedAirspace: Airspace
+  enteredAirspace: Airspace
+  annotation: Note
+
+ChangeOverPoint:
+  distance: ValDistanceType
+  location: SignificantPoint
+  applicableRoutePortion: RoutePortion
+
+DirectFlight: &DirectFlight
+  annotation: Note
+
+DirectFlightClass:
+  <<: *DirectFlight
+  exceedLength: ValDistanceType
+
+DirectFlightSegment:
+  <<: *DirectFlight
+  end: SignificantPoint
+  start: SignificantPoint
+
+Route:
+  designatorPrefix: CodeRouteDesignatorPrefixType
+  designatorSecondLetter: CodeRouteDesignatorLetterType
+  designatorNumber: NoNumberType
+  multipleIdentifier: CodeUpperAlphaType
+  locationDesignator: TextDesignatorType
+  name: TextNameType
+  type: CodeRouteType
+  flightRule: CodeFlightRuleType
+  internationalUse: CodeRouteOriginType
+  militaryUse: CodeMilitaryStatusType
+  militaryTrainingType: CodeMilitaryTrainingType
+  userOrganisation: OrganisationAuthority
+
+RouteAvailability:
+  <<: *PropertiesWithSchedule
+  direction: CodeDirectionType
+  cardinalDirection: CodeCardinalDirectionType
+  status: CodeRouteAvailabilityType
+  levels: AirspaceLayer
+
+RouteDME:
+  criticalDME: CodeYesNoType
+  satisfactory: CodeYesNoType
+  referencedDME: DME
+  applicableRoutePortion: RoutePortion
+
+RoutePortion:
+  start: SignificantPoint
+  intermediatePoint: SignificantPoint
+  end: SignificantPoint
+  referencedRoute: Route
+
+RouteSegment:
+  level: CodeLevelType
+  upperLimit: ValDistanceVerticalType
+  upperLimitReference: CodeVerticalReferenceType
+  lowerLimit: ValDistanceVerticalType
+  lowerLimitReference: CodeVerticalReferenceType
+  minimumObstacleClearanceAltitude: ValDistanceVerticalType
+  pathType: CodeRouteSegmentPathType
+  trueTrack: ValBearingType
+  magneticTrack: ValBearingType
+  reverseTrueTrack: ValBearingType
+  reverseMagneticTrack: ValBearingType
+  length: ValDistanceType
+  widthLeft: ValDistanceType
+  widthRight: ValDistanceType
+  turnDirection: CodeDirectionTurnType
+  signalGap: CodeYesNoType
+  minimumEnrouteAltitude: ValDistanceVerticalType
+  minimumCrossingAtEnd: ValDistanceVerticalType
+  minimumCrossingAtEndReference: CodeVerticalReferenceType
+  maximumCrossingAtEnd: ValDistanceVerticalType
+  maximumCrossingAtEndReference: CodeVerticalReferenceType
+  navigationType: CodeRouteNavigationType
+  requiredNavigationPerformance: CodeRNPType
+  designatorSuffix: CodeRouteDesignatorSuffixType
+  curveExtent: Curve
+  start: EnRouteSegmentPoint
+  end: EnRouteSegmentPoint
+  routeFormed: Route
+  availability: RouteAvailability
+  evaluationArea: ObstacleAssessmentArea
+
+#####################
+## RulesProcedures ##
+#####################
+
+RulesProcedures:
+  category: CodeRuleProcedureType
+  title: CodeRuleProcedureTitleType
+  content: XHTMLType
+  affectedLocation: AirportHeliport
+  affectedArea: Airspace
+  annotation: Note
+
+###############
+##  Service  ##
+###############
+
+Service: &Service
+  flightOperations: CodeFlightDestinationType
+  rank: CodeFacilityRankingType
+  compliantICAO: CodeYesNoType
+  name: TextNameType
+  location: ElevatedPoint
+  serviceProvider: Unit
+  call-sign: CallsignDetail
+  radioCommunication: RadioCommunicationChannel
+  availability: ServiceOperationalStatus
+  groundCommunication: ContactInformation
+
+CallsignDetail:
+  callSign: TextNameType
+  language: CodeLanguageType
+
+TrafficSeparationService: &TrafficSeparationService
+  <<: *Service
+  radarAssisted: CodeYesNoType
+  dataLinkEnabled: CodeYesNoType
+  dataLinkChannel: CodeCommunicationChannelType
+
+AirTrafficControlService:
+  <<: *TrafficSeparationService
+  type: CodeServiceATCType
+  clientAerialRefuelling: AerialRefuelling
+  clientAirport: AirportHeliport
+  clientAirspace: Airspace
+  clientHolding: HoldingPattern
+  aircraftLocator: DirectionFinder
+  clientProcedure: Procedure
+  clientRoute: RoutePortion
+
+AirTrafficManagementService:
+  <<: *Service
+  type: CodeServiceATFMType
+
+AirportGroundService: &AirportGroundService
+  <<: *Service
+
+AircraftGroundService:
+  <<: *AirportGroundService
+  type: CodeAircraftGroundServiceType
+
+AirportClearanceService:
+  <<: *AirportGroundService
+  snowPlan: TextInstructionType
+
+AirportSuppliesService:
+  <<: *AirportGroundService
+
+GroundTrafficControlService:
+  <<: *TrafficSeparationService
+  type: CodeServiceGroundControlType
+
+InformationService:
+  <<: *Service
+  type: CodeServiceInformationType
+  voice: CodeYesNoType
+  dataLink: CodeYesNoType
+  recorded: CodeYesNoType
+  clientAerialRefuelling: AerialRefuelling
+  clientAirport: AirportHeliport
+  clientAirspace: Airspace
+  clientHolding: HoldingPattern
+  navaidBroadcast: VOR
+  clientProcedure: Procedure
+  clientRoute: RoutePortion
+
+ServiceOperationalStatus:
+  <<: *PropertiesWithSchedule
+  operationalStatus: CodeStatusServiceType
+
+####################
+##  Surveillance  ##
+####################
+
+RadarEquipment: &RadarEquipment
+  name: TextNameType
+  serialNumber: TextDesignatorType
+  range: ValDistanceType
+  rangeAccuracy: ValDistanceType
+  dualChannel: CodeYesNoType
+  movingTargetIndicator: CodeYesNoType
+  standbyPower: CodeStandbyPowerType
+  digital: CodeYesNoType
+  militaryUseOnly: CodeYesNoType
+  specialUseOnly: CodeYesNoType
+  specialAircraftOnly: CodeYesNoType
+  magneticVariation: ValMagneticVariationType
+  magneticVariationAccuracy: ValAngleType
+  dateMagneticVariation: DateYearType
+  location: ElevatedPoint
+  contact: ContactInformation
+
+SurveillanceRadar: &SurveillanceRadar
+  <<: *RadarEquipment
+  verticalCoverageAltitude: ValDistanceVerticalType
+  verticalCoverageDistance: ValDistanceType
+  verticalCoverageAzimuth: ValBearingType
+  antennaTiltFixed: CodeYesNoType
+  tiltAngle: ValAngleType
+  automatedRadarTerminalSystem: TextDesignatorType
+  groundStation: Unit
+
+PrecisionApproachRadar:
+  <<: *RadarEquipment
+  precisionApproachRadarType: CodePARType
+  slope: ValAngleType
+  slopeAccuracy: ValAngleType
+  reflector: Reflector
+
+PrimarySurveillanceRadar:
+  <<: *SurveillanceRadar
+  type: CodePrimaryRadarType
+
+RadarComponent:
+  collocationGroup: NoSequenceType
+
+RadarSystem:
+  type: CodeRadarServiceType
+  model: TextNameType
+  generalTerrainMonitor: CodeYesNoType
+  broadcastIdentifier: TextDesignatorType
+  airportHeliport: AirportHeliport
+  PARRunway: Runway
+  location: ElevatedPoint
+  annotation: Note
+  office: OrganisationAuthority
+  radarEquipment: RadarEquipment
+
+Reflector:
+  type: CodeReflectorType
+  touchdownReflector: ElevatedPoint
+
+SecondarySurveillanceRadar:
+  <<: *SurveillanceRadar
+  transponder: CodeTransponderType
+  autonomous: CodeYesNoType
+  monopulse: CodeYesNoType
+
+SurveillanceGroundStation:
+  videoMap: CodeYesNoType
