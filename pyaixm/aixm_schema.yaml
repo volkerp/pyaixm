@@ -580,7 +580,7 @@ Runway:
   overallContaminant: RunwayContamination
   areaContaminant: RunwaySectionContamination
 
-RunwayCentreLinePoint:
+RunwayCentrelinePoint:
   role: CodeRunwayPointRoleType
   designator: TextDesignatorType
   location: ElevatedPoint
@@ -905,6 +905,47 @@ VisualGlideSlopeIndicator:
   slopeAngle: ValAngleType
   minimumEyeHeightOverThreshold: ValDistanceVerticalType
   runwayDirection: RunwayDirection
+
+##############
+## Holding  ##
+##############
+
+HoldingPattern:
+  type: CodeHoldingUsageType
+  outboundCourse: ValBearingType
+  outboundCourseType: CodeCourseType
+  inboundCourse: ValBearingType
+  turnDirection: CodeDirectionTurnType
+  upperLimit: ValDistanceVerticalType
+  upperLimitReference: CodeVerticalReferenceType
+  lowerLimit: ValDistanceVerticalType
+  lowerLimitReference: CodeVerticalReferenceType
+  speedLimit: ValSpeedType
+  instruction: TextInstructionType
+  nonStandardHolding: CodeYesNoType
+  extent: Curve
+  outboundLegSpan: HoldingPatternLength
+  annotation: Note
+  holdingPoint: SegmentPoint
+
+HoldingPatternDistance:
+  length: ValDistanceType
+
+HoldingPatternDuration:
+  duration: ValDurationType
+
+HoldingPatternLength:
+  endDistance: HoldingPatternDistance
+  endTime: HoldingPatternDuration
+  endPoint: SegmentPoint
+
+UnplannedHolding:
+  unplannedHolding: CodeApprovalType
+  authorizedAltitude: ValDistanceVerticalType
+  altitudeReference: CodeVerticalReferenceType
+  controlledAirspace: CodeYesNoType
+  annotation: Note
+  holdingPoint: SegmentPoint
 
 ######################
 ##  Navaids Points  ##
@@ -1312,8 +1353,28 @@ AirportClearanceService:
   <<: *AirportGroundService
   snowPlan: TextInstructionType
 
+AirportGroundService:
+  <<: *Service
+  airportHeliport: AirportHeliport
+
 AirportSuppliesService:
   <<: *AirportGroundService
+  oxygenSupply: Oxygen
+  fuelSupply: Fuel
+  oilSupply: Oil
+  nitrogenSupply: Nitrogen
+
+CallsignDetail:
+  callSign: TextNameType
+  language: CodeLanguageType
+
+FireFightingService:
+  <<: *AirportGroundService
+  category: CodeFireFightingType
+  standard: CodeAviationStandardsType
+
+Fuel:
+  category: CodeFuelType
 
 GroundTrafficControlService:
   <<: *TrafficSeparationService
@@ -1331,6 +1392,55 @@ InformationService:
   clientHolding: HoldingPattern
   navaidBroadcast: VOR
   clientProcedure: Procedure
+  clientRoute: RoutePortion
+
+Nitrogen:
+  type: CodeNitrogenType
+
+Oil:
+  category: CodeOilType
+
+Oxygen:
+  type: CodeOxygenType
+
+PassengerService:
+  <<: *AirportGroundService
+  type: CodePassengerServiceType
+
+PilotControlledLighting:
+  type: CodePilotControlledLightingType
+  duration: ValDurationType
+  intensitySteps: NoNumberType
+  standByIntensity: CodeIntensityStandByType
+  radioFrequency: ValFrequencyType
+  activationInstruction: TextInstructionType
+  activatedGroundLighting: GroundLightSystem
+  controlledLightIntensity: LightActivation
+  annotation: Note
+
+RadioCommunicationChannel:
+  mode: CodeCommunicationModeType
+  rank: CodeFacilityRankingType
+  frequencyTransmission: ValFrequencyType
+  frequencyReception: ValFrequencyType
+  channel: CodeCommunicationChannelType
+  logon: TextDesignatorType
+  emissionType: CodeRadioEmissionType
+  selectiveCall: CodeYesNoType
+  flightChecked: CodeYesNoType
+  trafficDirection: CodeCommunicationDirectionType
+  location: ElevatedPoint
+  annotation: Note
+  availability: RadioCommunicationOperationalStatus
+
+RadioCommunicationOperationalStatus:
+  <<: *PropertiesWithSchedule
+  operationalStatus: CodeStatusServiceType
+
+SearchRescueService:
+  <<: *Service
+  type: CodeServiceSARType
+  clientAirspace: Airspace
   clientRoute: RoutePortion
 
 ServiceOperationalStatus:
