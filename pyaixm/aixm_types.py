@@ -4,6 +4,7 @@ import typing
 from pprint import pprint
 import warnings
 import yaml
+import pdb
 
 
 AIXM = "{http://www.aixm.aero/schema/5.1.1}"
@@ -27,9 +28,9 @@ class Feature:
 
 
 @dataclass
-class PolygonPatch:
-    """ One of GM_Polygon, GM_Surface """
+class GMLPatches:
     patches: typing.List
+    gmlid: str = None
 
     @classmethod
     def parse(cls, elm):
@@ -121,6 +122,9 @@ def construct_dataclass(schema: dict, classname: str):
                 elif feature_type == str:
                     if elm.text is not None and len(elm.text.strip()) > 0:
                         attribute.append(elm.text.strip())
+                elif field.type == 'GMLPatches':
+                    """ todo: generic solution"""
+                    attribute += [feature_type.parse(elm2) for elm2 in elm.iter('{*}PolygonPatch')]
                 else:
                     # field type is complex (not str)
                     # recurse
@@ -168,7 +172,7 @@ schemafile = os.path.join(os.path.dirname(__file__), 'aixm_schema.yaml')
 with open(schemafile) as j:
     schema = yaml.safe_load(j)
 
-    feature_types['PolygonPatch'] = PolygonPatch
+    feature_types['GMLPatches'] = GMLPatches
 
     for feature_name in schema.keys():
         # construct dataclass from schema

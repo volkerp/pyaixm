@@ -835,7 +835,7 @@ ElevatedSurface:
   verticalDatum: CodeVerticalDatumType
   verticalAccuracy: ValDistanceType
   horizontalAccuracy: ValDistanceType
-  patches: Polygon Patch
+  patches: GMLPatches
 
 EnRouteSegmentPoint: #*SegmentPoint
   roleFreeFlight: CodeFreeFlightType
