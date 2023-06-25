@@ -16,6 +16,7 @@ XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
 class Feature:
     gmlid: str = None
     gmlidentifier: str = None
+    parent: 'Feature' = None
     id_registry = {}
 
     def parse(self, elm):
@@ -31,13 +32,24 @@ class Feature:
 class GMLPatches:
     patches: typing.List
     gmlid: str = None
+    parent: 'Feature' = None
+    registry = []
+
+    def _parse_poslist(s: str):
+        return [float(v) for  v in s.split()]
 
     @classmethod
-    def parse(cls, elm):
+    def parse(cls, elm, parent = None):
         patches = []
-        for pl in elm.iter('{*}posList'):
-            patches.append(pl.text)
-        return cls(patches)
+        for seg in elm.iter('{*}segments'):
+            p = []
+            for pl in seg.iter('{*}posList'):
+                p += cls._parse_poslist(pl.text)
+            patches.append(p)
+
+        p = cls(patches, parent=parent)
+        cls.registry.append(p)
+        return p
 
 
 class XLink():
@@ -99,8 +111,8 @@ def construct_dataclass(schema: dict, classname: str):
 
     # this method defined here is placed in the to be contructed class
     @classmethod
-    def _parse(cls, featureElm):
-        c = cls()
+    def _parse(cls, featureElm, parent = None):
+        c = cls(parent=parent)
         super(cls, c).parse(featureElm)
 
         # handle the fields defined in schema
@@ -124,11 +136,11 @@ def construct_dataclass(schema: dict, classname: str):
                         attribute.append(elm.text.strip())
                 elif field.type == 'GMLPatches':
                     """ todo: generic solution"""
-                    attribute += [feature_type.parse(elm2) for elm2 in elm.iter('{*}PolygonPatch')]
+                    attribute += [feature_type.parse(elm2, parent=c) for elm2 in elm.iter('{*}PolygonPatch')]
                 else:
                     # field type is complex (not str)
                     # recurse
-                    attribute += [feature_type.parse(elm2) for elm2 in elm.iter('{*}' + field.type)]
+                    attribute += [feature_type.parse(elm2, parent=c) for elm2 in elm.iter('{*}' + field.type)]
 
                 if len(attribute) == 0:
                     c.__setattr__(field.name, None)
