@@ -1,4 +1,5 @@
-from dataclasses import dataclass, field, fields, make_dataclass
+from dataclasses import dataclass, asdict, field, fields, make_dataclass
+import json
 import os
 import typing
 from pprint import pprint
@@ -27,6 +28,20 @@ class Feature:
             self.gmlidentifier = identi_elm.text
             Feature.id_registry[self.gmlidentifier] = self
 
+    def dict(self):
+        d = {}
+        for field in fields(self):
+            if field.name in {'parent', 'id_registry'}:
+                continue
+
+            value = getattr(self, field.name)
+            d[field.name] = value
+
+        return d
+
+    def to_json(self):
+        return { self.__class__.__name__: self.dict() }
+
 
 @dataclass
 class GMLPatches:
@@ -50,6 +65,12 @@ class GMLPatches:
         p = cls(patches, parent=parent)
         cls.registry.append(p)
         return p
+
+    def dict(self):
+        return { 'patches': self.patches,
+                'gmlid': self.gmlid }
+
+    to_json = dict
 
 
 class XLink():
@@ -91,6 +112,9 @@ class XLink():
     def __repr__(self) -> str:
         return f"XLink(href: {self.href} target: {'resolved' if self.target else 'unresolved'})"
 
+    def to_json(self) -> dict:
+        return { 'XLink': { 'href': self.href, 'target': self.target.__class__.__name__} }
+
 
 class Nil():
     def __init__(self, nil_reason = None):
@@ -102,6 +126,9 @@ class Nil():
             return cls(elm.get('nilReason'))
         else:
             return None
+
+    def to_json(self):
+        return { 'Nil': self.nil_reason }
 
     def __repr__(self) -> str:
         return f'Nil(reason: {self.nil_reason})'
