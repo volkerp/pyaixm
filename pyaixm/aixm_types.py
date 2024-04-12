@@ -60,6 +60,8 @@ class GMLPatches:
             p = []
             for pl in seg.iter('{*}posList'):
                 p += cls._parse_poslist(pl.text)
+            for pos in seg.iter('{*}pos'):
+                p += cls._parse_poslist(pos.text)
             patches.append(p)
 
         p = cls(patches, parent=parent)
@@ -179,6 +181,7 @@ def construct_dataclass(schema: dict, classname: str):
 
 
     class_fields = list()
+    class_fields.append(('feature_name', str, field(default=classname)))
     for tag, typename in schema[classname].items():
         metadata = {'extract': True, 'tag': tag}
         fieldname = tag.replace('-', '')  # remove invalid chars from field name

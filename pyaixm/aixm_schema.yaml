@@ -858,6 +858,10 @@ RunwayVisualRange:
   location: ElevatedPoint
   annotation: Note
 
+Surface:
+  horizontalAccuracy: ValDistanceType
+  patches: GMLPatches
+
 TaxiwayMarking:
   markingLocation: CodeApronSectionType
   markingICAOStandard: CodeYesNoType
