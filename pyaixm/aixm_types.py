@@ -12,38 +12,35 @@ AIXM = "{http://www.aixm.aero/schema/5.1.1}"
 GML = "{http://www.opengis.net/gml/3.2}"
 XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
 
+
+
 @dataclass
-class XLinkMixin:
+class GmlObject:
+    id_registry = {}
+    gml_id: str = None
+
     def parse(self, elm):
-        xlink = XLink.parse(elm)
+        self.gml_id = elm.get(GML + 'id')
+        GmlObject.id_registry[self.gml_id] = self
+   
 
-        if xlink is not None:
-            self.xlink = xlink.text
-        else:
-            self.xlink = None
+@dataclass
+class Feature(GmlObject):
+    identifier_registry = {}
+    identifier: str = None
+    parent: 'Feature' = None
 
+    def parse(self, elm):
         super().parse(elm)
 
-
-@dataclass
-class Feature:
-    gmlid: str = None
-    gmlidentifier: str = None
-    parent: 'Feature' = None
-    id_registry = {}
-
-    def parse(self, elm):
-        self.gmlid = elm.get(GML + 'id')
-        Feature.id_registry[self.gmlid] = self
-
         if (identi_elm := elm.find(GML + 'identifier')) is not None:
-            self.gmlidentifier = identi_elm.text
-            Feature.id_registry[self.gmlidentifier] = self
+            self.identifier = identi_elm.text
+            Feature.identifier_registry[self.identifier] = self
 
     def dict(self):
         d = {}
         for field in fields(self):
-            if field.name in {'parent', 'id_registry'}:
+            if field.name in {'parent', 'id_registry', 'identifier_registry'}:
                 continue
 
             value = getattr(self, field.name)
@@ -53,27 +50,6 @@ class Feature:
 
     def to_json(self):
         return { self.__class__.__name__: self.dict() }
-
-
-@dataclass
-class PointMixin:
-    """
-    aixm:Point or aixm:ElevatedPoint
-    """
-    srsName: str = None
-
-    def parse(self, elm):
-        self.srsName = elm.get('srsName')
-
-        super().parse(elm)
-
-
-@dataclass
-class SurfaceMixin:
-    srsName: str = None
-
-    def parse(self, elm):
-        self.srsName = elm.get('srsName')
 
 
 @dataclass
@@ -195,10 +171,13 @@ class XLink:
     def resolve(cls):
         for href, xlink in cls.xlink_registry.items():
             if xlink.href.startswith('#'):
-                feature = Feature.id_registry.get(xlink.href[1:])
+                # local reference
+                feature = GmlObject.id_registry.get(xlink.href[1:])
             elif xlink.href.startswith('urn:uuid:'):
-                feature = Feature.id_registry.get(xlink.href[9:])
+                # universal resource name (URN) pointing to a UUID
+                feature = Feature.identifier_registry.get(xlink.href[9:])
             else:
+                # external reference and natural keys are not supported
                 feature = None
 
             if feature is None:
@@ -285,18 +264,8 @@ def construct_dataclass(schema: dict, classname: str):
             (fieldname, typename, field(default=None, metadata=metadata))
         )
 
-    bases = (Feature,)
-    {'Point': PointMixin,
-     'ElevatedPoint': PointMixin,
-     'Surface': SurfaceMixin,
-     'ElevatedSurface': SurfaceMixin
-    }.get(classname)
-    if classname == 'ElevatedPoint':
-        bases = (PointMixin, Feature)
-    elif classname == 'ElevatedSurface':
-        bases = (SurfaceMixin, Feature)
 
-    new_class = make_dataclass(classname, class_fields, bases=bases, namespace={'parse': _parse})
+    new_class = make_dataclass(classname, class_fields, bases=(Feature, ), namespace={'parse': _parse})
 
     return new_class
 
