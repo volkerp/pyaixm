@@ -12,6 +12,18 @@ AIXM = "{http://www.aixm.aero/schema/5.1.1}"
 GML = "{http://www.opengis.net/gml/3.2}"
 XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
 
+@dataclass
+class XLinkMixin:
+    def parse(self, elm):
+        xlink = XLink.parse(elm)
+
+        if xlink is not None:
+            self.xlink = xlink.text
+        else:
+            self.xlink = None
+
+        super().parse(elm)
+
 
 @dataclass
 class Feature:
@@ -65,6 +77,16 @@ class SurfaceMixin:
 
 
 @dataclass
+class GMLCircleByCenterPoint:
+    pos: str = None
+
+    def parse(self, elm):
+        pos = elm.find(GML + 'pos').text
+        print('Parse CircleByCenterPoint')
+
+
+
+@dataclass
 class GMLArcByCenterPoint:
     pos: str = None
     radius: float = None
@@ -83,7 +105,7 @@ class GMLArcByCenterPoint:
         o.radius_uom = elm.find(GML + 'radius').get('uom')
         if elm.find(GML + 'startAngle') is not None:
             o.startAngle = float(elm.find(GML + 'startAngle').text)
-        if elm.find(GML + 'endAngle'):
+        if elm.find(GML + 'endAngle') is not None:
             o.endAngle = float(elm.find(GML + 'endAngle').text)
 
         return o
@@ -111,8 +133,9 @@ class GMLGeodesicString:
 
 
 @dataclass
-class GMLPatches:
+class GMLPatch:
     patches: typing.List
+    exterior_ring: typing.List = None
     gmlid: str = None
     parent: 'Feature' = None
     registry = []
@@ -124,13 +147,13 @@ class GMLPatches:
     def parse(cls, elm, parent = None):
         patches = []
 
-        elm_segments = next(elm.iter('{*}segments'))
-
-        for seg in elm_segments:
-            if seg.tag == GML + 'GeodesicString':
-                patches.append(GMLGeodesicString.parse(seg))
-            elif seg.tag == GML + 'ArcByCenterPoint':
-                patches.append(GMLArcByCenterPoint.parse(seg))
+        #elm_segments = next(elm.iter('{*}segments'))
+        for seg in elm.iter('{*}segments'):
+            for sub_seg in seg:
+                if sub_seg.tag == GML + 'GeodesicString' or sub_seg.tag == GML + 'LineStringSegment':
+                    patches.append(GMLGeodesicString.parse(sub_seg))
+                elif sub_seg.tag == GML + 'ArcByCenterPoint':
+                    patches.append(GMLArcByCenterPoint.parse(sub_seg))
  #           for pl in seg.iter('{*}posList'):
  #               p += cls._parse_poslist(pl.text)
  #           for pos in seg.iter('{*}pos'):
@@ -147,16 +170,7 @@ class GMLPatches:
     to_json = dict
 
 
-@dataclass
-class GMLCircleByCenterPoint:
-    pos: str = None
-
-    def parse(self, elm):
-        pos = elm.find(GML + 'pos').text
-        print('Parse CircleByCenterPoint')
-
-
-class XLink():
+class XLink:
     xlink_registry = {}
     target: Feature = None
 
@@ -199,7 +213,7 @@ class XLink():
         return { 'XLink': { 'href': self.href, 'target': self.target.__class__.__name__} }
 
 
-class Nil():
+class Nil:
     def __init__(self, nil_reason = None):
         self.nil_reason = nil_reason
 
@@ -244,7 +258,7 @@ def construct_dataclass(schema: dict, classname: str):
                 elif feature_type == str:
                     if elm.text is not None and len(elm.text.strip()) > 0:
                         attribute.append(elm.text.strip())
-                elif field.type == 'GMLPatches':
+                elif field.type == 'GMLPatch':
                     """ todo: generic solution"""
                     attribute += [feature_type.parse(elm2, parent=c) for elm2 in elm.iter('{*}PolygonPatch')]
                 else:
@@ -306,7 +320,7 @@ schemafile = os.path.join(os.path.dirname(__file__), 'aixm_schema.yaml')
 with open(schemafile) as j:
     schema = yaml.safe_load(j)
 
-    feature_types['GMLPatches'] = GMLPatches
+    feature_types['GMLPatch'] = GMLPatch
     feature_types['CircleByCenterPoint'] = GMLCircleByCenterPoint
 
     for feature_name in schema.keys():
