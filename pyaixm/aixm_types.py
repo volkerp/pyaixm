@@ -44,6 +44,73 @@ class Feature:
 
 
 @dataclass
+class PointMixin:
+    """
+    aixm:Point or aixm:ElevatedPoint
+    """
+    srsName: str = None
+
+    def parse(self, elm):
+        self.srsName = elm.get('srsName')
+
+        super().parse(elm)
+
+
+@dataclass
+class SurfaceMixin:
+    srsName: str = None
+
+    def parse(self, elm):
+        self.srsName = elm.get('srsName')
+
+
+@dataclass
+class GMLArcByCenterPoint:
+    pos: str = None
+    radius: float = None
+    radius_uom: str = None
+    startAngle: float = None
+    endAngle: float = None
+
+    def _parse_poslist(s: str):
+        return [float(v) for  v in s.strip().split()] 
+
+    @classmethod
+    def parse(cls, elm):
+        o = cls()
+        o.pos = cls._parse_poslist(elm.find(GML + 'pos').text)
+        o.radius = float(elm.find(GML + 'radius').text)
+        o.radius_uom = elm.find(GML + 'radius').get('uom')
+        if elm.find(GML + 'startAngle') is not None:
+            o.startAngle = float(elm.find(GML + 'startAngle').text)
+        if elm.find(GML + 'endAngle'):
+            o.endAngle = float(elm.find(GML + 'endAngle').text)
+
+        return o
+
+
+@dataclass
+class GMLGeodesicString:
+    pos: typing.List
+
+    def _parse_poslist(s: str):
+        return [float(v) for  v in s.strip().split()] 
+
+    @classmethod
+    def parse(cls, elm):
+        p = []
+        for pl in elm.iter('{*}posList'):
+            p += cls._parse_poslist(pl.text)
+        for pos in elm.iter('{*}pos'):
+            p += cls._parse_poslist(pos.text)
+
+        return cls(pos=p)
+
+    def dict(self):
+        return { 'pos': self.pos }
+
+
+@dataclass
 class GMLPatches:
     patches: typing.List
     gmlid: str = None
@@ -56,13 +123,18 @@ class GMLPatches:
     @classmethod
     def parse(cls, elm, parent = None):
         patches = []
-        for seg in elm.iter('{*}segments'):
-            p = []
-            for pl in seg.iter('{*}posList'):
-                p += cls._parse_poslist(pl.text)
-            for pos in seg.iter('{*}pos'):
-                p += cls._parse_poslist(pos.text)
-            patches.append(p)
+
+        elm_segments = next(elm.iter('{*}segments'))
+
+        for seg in elm_segments:
+            if seg.tag == GML + 'GeodesicString':
+                patches.append(GMLGeodesicString.parse(seg))
+            elif seg.tag == GML + 'ArcByCenterPoint':
+                patches.append(GMLArcByCenterPoint.parse(seg))
+ #           for pl in seg.iter('{*}posList'):
+ #               p += cls._parse_poslist(pl.text)
+ #           for pos in seg.iter('{*}pos'):
+ #               p += cls._parse_poslist(pos.text)
 
         p = cls(patches, parent=parent)
         cls.registry.append(p)
@@ -73,6 +145,15 @@ class GMLPatches:
                 'gmlid': self.gmlid }
 
     to_json = dict
+
+
+@dataclass
+class GMLCircleByCenterPoint:
+    pos: str = None
+
+    def parse(self, elm):
+        pos = elm.find(GML + 'pos').text
+        print('Parse CircleByCenterPoint')
 
 
 class XLink():
@@ -190,7 +271,18 @@ def construct_dataclass(schema: dict, classname: str):
             (fieldname, typename, field(default=None, metadata=metadata))
         )
 
-    new_class = make_dataclass(classname, class_fields, bases=(Feature,), namespace={'parse': _parse})
+    bases = (Feature,)
+    {'Point': PointMixin,
+     'ElevatedPoint': PointMixin,
+     'Surface': SurfaceMixin,
+     'ElevatedSurface': SurfaceMixin
+    }.get(classname)
+    if classname == 'ElevatedPoint':
+        bases = (PointMixin, Feature)
+    elif classname == 'ElevatedSurface':
+        bases = (SurfaceMixin, Feature)
+
+    new_class = make_dataclass(classname, class_fields, bases=bases, namespace={'parse': _parse})
 
     return new_class
 
@@ -215,6 +307,7 @@ with open(schemafile) as j:
     schema = yaml.safe_load(j)
 
     feature_types['GMLPatches'] = GMLPatches
+    feature_types['CircleByCenterPoint'] = GMLCircleByCenterPoint
 
     for feature_name in schema.keys():
         # construct dataclass from schema

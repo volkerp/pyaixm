@@ -716,6 +716,14 @@ TouchDownLiftOff:
   slope: ValSlopeType
   helicopterClass: CodeHelicopterPerformanceType
   abandoned: CodeYesNoType
+  associatedAirportHeliport: AirportHeliport
+  surfaceProperties: SurfaceCharacteristics
+  aimingPoint: ElevatedPoint
+  contaminant: TouchDownLiftOffContamination
+  annotation: Note
+  extent: ElevatedSurface
+  approachTakeOffArea: Runway
+  availability: ManoeuvringAreaAvailability 
 
 TouchDownLiftOffLightSystem:
   <<: *GroundLightSystem
