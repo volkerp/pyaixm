@@ -18,11 +18,13 @@ XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
 class GmlObject:
     id_registry = {}
     gml_id: str = None
+    srs_name: str = None
 
     def parse(self, elm):
         self.gml_id = elm.get(GML + 'id')
         GmlObject.id_registry[self.gml_id] = self
-   
+        self.srs_name = elm.get(GML + 'srsName')
+
 
 @dataclass
 class Feature(GmlObject):
@@ -41,6 +43,10 @@ class Feature(GmlObject):
         d = {}
         for field in fields(self):
             if field.name in {'parent', 'id_registry', 'identifier_registry'}:
+                continue
+
+            # suppress srs_name if not set (most of the time it is not set)
+            if field.name == 'srs_name' and getattr(self, field.name) is None:
                 continue
 
             value = getattr(self, field.name)
@@ -109,39 +115,53 @@ class GMLGeodesicString:
 
 
 @dataclass
-class GMLPatch:
-    patches: typing.List
-    exterior_ring: typing.List = None
-    gmlid: str = None
+class GMLCurve(GmlObject):
+    segments: typing.List = None
+
+    def _parse_poslist(s: str):
+        return [float(v) for  v in s.split()]
+
+    @classmethod
+    def parse(cls, elm):
+        segments = []
+        for seg in elm.iter('{*}segments'):
+            for sub_seg in seg:
+                if sub_seg.tag == GML + 'GeodesicString' or sub_seg.tag == GML + 'LineStringSegment':
+                    segments.append(GMLGeodesicString.parse(sub_seg))
+                elif sub_seg.tag == GML + 'ArcByCenterPoint':
+                    segments.append(GMLArcByCenterPoint.parse(sub_seg))
+
+        c = cls(segments=segments)
+
+        super(cls, c).parse(elm)
+        return c
+
+
+@dataclass
+class GMLPatch(GmlObject):
+    #patches: typing.List
+    exterior_ring: typing.List = field(default_factory=list)
     parent: 'Feature' = None
-    registry = []
 
     def _parse_poslist(s: str):
         return [float(v) for  v in s.split()]
 
     @classmethod
     def parse(cls, elm, parent = None):
-        patches = []
+        p = cls(parent=parent)
+        super(cls, p).parse(elm)
 
-        #elm_segments = next(elm.iter('{*}segments'))
-        for seg in elm.iter('{*}segments'):
-            for sub_seg in seg:
-                if sub_seg.tag == GML + 'GeodesicString' or sub_seg.tag == GML + 'LineStringSegment':
-                    patches.append(GMLGeodesicString.parse(sub_seg))
-                elif sub_seg.tag == GML + 'ArcByCenterPoint':
-                    patches.append(GMLArcByCenterPoint.parse(sub_seg))
- #           for pl in seg.iter('{*}posList'):
- #               p += cls._parse_poslist(pl.text)
- #           for pos in seg.iter('{*}pos'):
- #               p += cls._parse_poslist(pos.text)
+        for curvm in elm.iter(GML + 'curveMember'):
+            if (xlink := XLink.parse(curvm)):
+                p.exterior_ring.append(xlink)
+            
+            for curve in curvm.iter(GML + 'Curve'):
+                p.exterior_ring.append(GMLCurve.parse(curve))
 
-        p = cls(patches, parent=parent)
-        cls.registry.append(p)
         return p
 
     def dict(self):
-        return { 'patches': self.patches,
-                'gmlid': self.gmlid }
+        return { 'exterior_ring': self.exterior_ring }
 
     to_json = dict
 
