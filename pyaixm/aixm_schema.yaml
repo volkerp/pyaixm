@@ -1176,6 +1176,17 @@ VOR:
   zeroBearingDirection: CodeNorthReferenceType
   declination: ValMagneticVariationType
 
+##################
+##  Obstacle    ##
+##################
+
+ObstacleArea:
+  type:	CodeObstacleAreaType
+  obstructionIdSurfaceCondition: CodeObstacleAssessmentSurfaceType 
+
+ObstacleAreaOrigin:
+
+
 ####################
 ##  Organization  ##
 ####################
@@ -1329,10 +1340,6 @@ Service: &Service
   availability: ServiceOperationalStatus
   groundCommunication: ContactInformation
 
-CallsignDetail:
-  callSign: TextNameType
-  language: CodeLanguageType
-
 TrafficSeparationService: &TrafficSeparationService
   <<: *Service
   radarAssisted: CodeYesNoType
@@ -1356,6 +1363,7 @@ AirTrafficManagementService:
 
 AirportGroundService: &AirportGroundService
   <<: *Service
+  airportHeliport: AirportHeliport
 
 AircraftGroundService:
   <<: *AirportGroundService
@@ -1364,10 +1372,6 @@ AircraftGroundService:
 AirportClearanceService:
   <<: *AirportGroundService
   snowPlan: TextInstructionType
-
-AirportGroundService:
-  <<: *Service
-  airportHeliport: AirportHeliport
 
 AirportSuppliesService:
   <<: *AirportGroundService
