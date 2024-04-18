@@ -843,7 +843,7 @@ ElevatedSurface:
   verticalDatum: CodeVerticalDatumType
   verticalAccuracy: ValDistanceType
   horizontalAccuracy: ValDistanceType
-  patches: GMLPatch
+  patches: GmlPatch
 
 EnRouteSegmentPoint: #*SegmentPoint
   roleFreeFlight: CodeFreeFlightType
@@ -868,7 +868,7 @@ RunwayVisualRange:
 
 Surface:
   horizontalAccuracy: ValDistanceType
-  patches: GMLPatch
+  patches: GmlPatch
 
 TaxiwayMarking:
   markingLocation: CodeApronSectionType

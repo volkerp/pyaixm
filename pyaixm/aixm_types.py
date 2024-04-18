@@ -13,7 +13,6 @@ GML = "{http://www.opengis.net/gml/3.2}"
 XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
 
 
-
 @dataclass
 class GmlObject:
     id_registry = {}
@@ -23,7 +22,17 @@ class GmlObject:
     def parse(self, elm):
         self.gml_id = elm.get(GML + 'id')
         GmlObject.id_registry[self.gml_id] = self
-        self.srs_name = elm.get(GML + 'srsName')
+        self.srs_name = elm.get('srsName')
+
+    def dict(self):
+        d = { 'gml_id': self.gml_id }
+        if self.srs_name is not None:
+            d['srs_name'] = self.srs_name
+
+        return d
+
+    def to_json(self):
+        return { self.__class__.__name__: self.dict() }
 
 
 @dataclass
@@ -45,8 +54,8 @@ class Feature(GmlObject):
             if field.name in {'parent', 'id_registry', 'identifier_registry'}:
                 continue
 
-            # suppress srs_name if not set (most of the time it is not set)
-            if field.name == 'srs_name' and getattr(self, field.name) is None:
+            # suppress srs_name and identifier if not set
+            if field.name in { 'srs_name', 'identifier' } and getattr(self, field.name) is None:
                 continue
 
             value = getattr(self, field.name)
@@ -54,22 +63,35 @@ class Feature(GmlObject):
 
         return d
 
-    def to_json(self):
-        return { self.__class__.__name__: self.dict() }
-
 
 @dataclass
-class GMLCircleByCenterPoint:
+class GmlCircleByCenterPoint(GmlObject):
     pos: str = None
+    radius: float = None
+    radius_uom: str = None
 
-    def parse(self, elm):
-        pos = elm.find(GML + 'pos').text
-        print('Parse CircleByCenterPoint')
+    def _parse_poslist(s: str):
+        return [float(v) for  v in s.strip().split()] 
 
+    @classmethod
+    def parse(cls, elm):
+        o = cls()
+        super(cls, o).parse(elm)
+        o.pos = cls._parse_poslist(elm.find(GML + 'pos').text)
+        o.radius = float(elm.find(GML + 'radius').text)
+        o.radius_uom = elm.find(GML + 'radius').get('uom')
 
+        return o
+
+    def dict(self):
+        return { 'pos': self.pos, 'radius': self.radius, 'radius_uom': self.radius_uom }
+
+    def to_json(self):
+        return { 'GmlCircleByCenterPoint': self.dict() }
+    
 
 @dataclass
-class GMLArcByCenterPoint:
+class GmlArcByCenterPoint(GmlObject):
     pos: str = None
     radius: float = None
     radius_uom: str = None
@@ -82,6 +104,7 @@ class GMLArcByCenterPoint:
     @classmethod
     def parse(cls, elm):
         o = cls()
+        super(cls, o).parse(elm)
         o.pos = cls._parse_poslist(elm.find(GML + 'pos').text)
         o.radius = float(elm.find(GML + 'radius').text)
         o.radius_uom = elm.find(GML + 'radius').get('uom')
@@ -91,11 +114,17 @@ class GMLArcByCenterPoint:
             o.endAngle = float(elm.find(GML + 'endAngle').text)
 
         return o
+    
+    def dict(self):
+        return { 'pos': self.pos, 'radius': self.radius, 'radius_uom': self.radius_uom, 'startAngle': self.startAngle, 'endAngle': self.endAngle } 
+
+    def to_json(self):
+        return { 'GmlArcByCenterPoint': self.dict() }
 
 
 @dataclass
-class GMLGeodesicString:
-    pos: typing.List
+class GmlGeodesicString(GmlObject):
+    pos: typing.List = None
 
     def _parse_poslist(s: str):
         return [float(v) for  v in s.strip().split()] 
@@ -108,14 +137,45 @@ class GMLGeodesicString:
         for pos in elm.iter('{*}pos'):
             p += cls._parse_poslist(pos.text)
 
-        return cls(pos=p)
+        c = cls(pos=p)
+        super(cls, c).parse(elm)
+        return c
+
+    def dict(self):
+        return { 'pos': self.pos }
+    
+    def to_json(self):
+        return { 'GmlGeodesicString': self.dict() }
+
+
+@dataclass
+class GmlLinearRing(GmlObject):
+    pos: typing.List = None
+
+    def _parse_poslist(s: str):
+        return [float(v) for  v in s.strip().split()] 
+
+    @classmethod
+    def parse(cls, elm):
+        p = []
+        for pl in elm.iter('{*}posList'):
+            p += cls._parse_poslist(pl.text)
+        for pos in elm.iter('{*}pos'):
+            p += cls._parse_poslist(pos.text)
+
+        c = cls(pos=p)
+        super(cls, c).parse(elm)
+        return c
 
     def dict(self):
         return { 'pos': self.pos }
 
+    def to_json(self):
+        return { 'GmlLinearRing': self.dict() }
+
 
 @dataclass
-class GMLCurve(GmlObject):
+class GmlCurve(GmlObject):
     segments: typing.List = None
 
     def _parse_poslist(s: str):
@@ -127,24 +187,26 @@ class GMLCurve(GmlObject):
         for seg in elm.iter('{*}segments'):
             for sub_seg in seg:
                 if sub_seg.tag == GML + 'GeodesicString' or sub_seg.tag == GML + 'LineStringSegment':
-                    segments.append(GMLGeodesicString.parse(sub_seg))
+                    segments.append(GmlGeodesicString.parse(sub_seg))
                 elif sub_seg.tag == GML + 'ArcByCenterPoint':
-                    segments.append(GMLArcByCenterPoint.parse(sub_seg))
+                    segments.append(GmlArcByCenterPoint.parse(sub_seg))
+                elif sub_seg.tag == GML + 'CircleByCenterPoint':
+                    segments.append(GmlCircleByCenterPoint.parse(sub_seg))
 
         c = cls(segments=segments)
-
         super(cls, c).parse(elm)
         return c
 
     def dict(self):
-        return { 'segments': [s.dict() for s in self.segments] }
+        d = super(GmlCurve, self).dict()
+        return { **d, 'segments': [s.dict() for s in self.segments] }
     
     def to_json(self):
-        return { self.__class__.__name__: self.dict() }
-    
+        return { 'GmlCurve': [s.to_json() for s in self.segments] }
+
 
 @dataclass
-class GMLPatch(GmlObject):
+class GmlPatch(GmlObject):
     #patches: typing.List
     exterior_ring: typing.List = field(default_factory=list)
     parent: 'Feature' = None
@@ -162,7 +224,12 @@ class GMLPatch(GmlObject):
                 p.exterior_ring.append(xlink)
             
             for curve in curvm.iter(GML + 'Curve'):
-                p.exterior_ring.append(GMLCurve.parse(curve))
+                p.exterior_ring.append(GmlCurve.parse(curve))
+
+        for polypatch in elm.iter(GML + 'PolygonPatch'):
+            for ext_ring in polypatch.iter(GML + 'exterior'):
+                for linr in ext_ring.iter(GML + 'LinearRing'):
+                    p.exterior_ring.append(GmlLinearRing.parse(linr))
 
         return p
 
@@ -265,7 +332,7 @@ def construct_dataclass(schema: dict, classname: str):
                 elif feature_type == str:
                     if elm.text is not None and len(elm.text.strip()) > 0:
                         attribute.append(elm.text.strip())
-                elif field.type == 'GMLPatch':
+                elif field.type == 'GmlPatch':
                     """ todo: generic solution"""
                     attribute += [feature_type.parse(elm2, parent=c) for elm2 in elm.iter('{*}PolygonPatch')]
                 else:
@@ -317,8 +384,8 @@ schemafile = os.path.join(os.path.dirname(__file__), 'aixm_schema.yaml')
 with open(schemafile) as j:
     schema = yaml.safe_load(j)
 
-    feature_types['GMLPatch'] = GMLPatch
-    feature_types['CircleByCenterPoint'] = GMLCircleByCenterPoint
+    feature_types['GmlPatch'] = GmlPatch
+    feature_types['CircleByCenterPoint'] = GmlCircleByCenterPoint
 
     for feature_name in schema.keys():
         # construct dataclass from schema
