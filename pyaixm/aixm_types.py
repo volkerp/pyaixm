@@ -136,6 +136,12 @@ class GMLCurve(GmlObject):
         super(cls, c).parse(elm)
         return c
 
+    def dict(self):
+        return { 'segments': [s.dict() for s in self.segments] }
+    
+    def to_json(self):
+        return { self.__class__.__name__: self.dict() }
+    
 
 @dataclass
 class GMLPatch(GmlObject):
