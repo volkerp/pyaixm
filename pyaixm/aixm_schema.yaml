@@ -885,29 +885,6 @@ TerminalSegmentPoint: #*SegmentPoint
   waypoint: CodeYesNoType
   radarGuidance: CodeYesNoType
 
-VerticalStructure:
-  name: TextNameType
-  type: CodeVerticalStructureType
-  lighted: CodeYesNoType
-  markingICAOStandard: CodeYesNoType
-  group: CodeYesNoType
-  length: ValDistanceType
-  width: ValDistanceType
-  radius: ValDistanceType
-  lightingICAOStandard: CodeYesNoType
-  synchronisedLighting: CodeYesNoType
-  supportedGroundLight: GroundLightSystem
-  marker: MarkerBeacon
-  hostedNavaidEquipment: NavaidEquipment
-  hostedSpecialNavStation: SpecialNavigationStation
-  annotation: Note
-  hostedPassengerService: PassengerService
-  supportedService: Service
-  hostedOrganisation: OrganisationAuthority
-  lightingAvailability: VerticalStructureLightingStatus
-  hostedUnit: Unit
-  part: VerticalStructurePart
-
 VisualGlideSlopeIndicator:
   <<: *GroundLightSystem
   type: CodeVASISType
@@ -1181,11 +1158,60 @@ VOR:
 ##################
 
 ObstacleArea:
-  type:	CodeObstacleAreaType
-  obstructionIdSurfaceCondition: CodeObstacleAssessmentSurfaceType 
+  type: CodeObstacleAreaType
+  obstructionIdSurfaceCondition: CodeObstacleAssessmentSurfaceType
+  surfaceExtent: Surface
+  annotation: Note
+  obstacle: VerticalStructure
+  reference: ObstacleAreaOrigin 
 
-ObstacleAreaOrigin:
+VerticalStructure:
+  name: TextNameType
+  type: CodeVerticalStructureType
+  lighted: CodeYesNoType
+  markingICAOStandard: CodeYesNoType
+  group: CodeYesNoType
+  length: ValDistanceType
+  width: ValDistanceType
+  radius: ValDistanceType
+  lightingICAOStandard: CodeYesNoType
+  synchronisedLighting: CodeYesNoType
+  supportedGroundLight: GroundLightSystem
+  marker: MarkerBeacon
+  hostedNavaidEquipment: NavaidEquipment
+  hostedSpecialNavStation: SpecialNavigationStation
+  annotation: Note
+  hostedPassengerService: PassengerService
+  supportedService: Service
+  hostedOrganisation: OrganisationAuthority
+  lightingAvailability: VerticalStructureLightingStatus
+  hostedUnit: Unit
+  part: VerticalStructurePart
 
+VerticalStructureLightingStatus:
+  <<: *PropertiesWithSchedule
+  status: CodeStatusOperationsType 
+
+VerticalStructurePart:
+  <<: *PropertiesWithSchedule
+  verticalExtent: ValDistanceType
+  verticalExtentAccuracy: ValDistanceType
+  type: CodeVerticalStructureType
+  constructionStatus: CodeStatusConstructionType
+  markingPattern: CodeVerticalStructureMarkingType
+  markingFirstColour: CodeColourType
+  markingSecondColour: CodeColourType
+  mobile: CodeYesNoType
+  frangible: CodeYesNoType
+  visibleMaterial: CodeVerticalStructureMaterialType
+  designator: TextDesignatorType 
+  horizontalProjection: VerticalStructurePartGeometry
+  lighting: LightElement
+
+VerticalStructurePartGeometry:
+  linearExtent: ElevatedCurve
+  location: ElevatedPoint
+  surfaceExtent: ElevatedSurface 
 
 ####################
 ##  Organization  ##

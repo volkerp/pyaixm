@@ -149,9 +149,11 @@ class GMLPatch:
 class XLink:
     xlink_registry = {}
     target: Feature = None
+    title: str = None
 
     def __init__(self, elm):
         self.href = elm.get('{http://www.w3.org/1999/xlink}href')
+        self.title = elm.get('{http://www.w3.org/1999/xlink}title')
         if not self.href:
             raise ValueError('Invalid xlink:href')
         XLink.xlink_registry[self.href] = self
@@ -189,7 +191,7 @@ class XLink:
         return f"XLink(href: {self.href} target: {'resolved' if self.target else 'unresolved'})"
 
     def to_json(self) -> dict:
-        return { 'XLink': { 'href': self.href, 'target': self.target.__class__.__name__} }
+        return { 'XLink': { 'href': self.href, 'target': self.target.__class__.__name__, 'title': self.title } }
 
 
 class Nil:
