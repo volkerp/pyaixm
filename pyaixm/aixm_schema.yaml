@@ -1321,10 +1321,6 @@ Service: &Service
   availability: ServiceOperationalStatus
   groundCommunication: ContactInformation
 
-CallsignDetail:
-  callSign: TextNameType
-  language: CodeLanguageType
-
 TrafficSeparationService: &TrafficSeparationService
   <<: *Service
   radarAssisted: CodeYesNoType
@@ -1357,7 +1353,7 @@ AirportClearanceService:
   <<: *AirportGroundService
   snowPlan: TextInstructionType
 
-AirportGroundService:
+AirportHelipotGroundService:
   <<: *Service
   airportHeliport: AirportHeliport
 
