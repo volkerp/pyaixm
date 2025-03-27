@@ -1521,3 +1521,11 @@ SecondarySurveillanceRadar:
 
 SurveillanceGroundStation:
   videoMap: CodeYesNoType
+
+##################
+##  Approaches  ##
+##################
+
+InstrumentApproachProcedure:
+  type: CodeInstrumentApproachProcedureType
+  name: TextNameType
