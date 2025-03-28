@@ -16,9 +16,7 @@ def replace_xlinks(features: list):
 
 def replace_xlinks_r(feature: aixm_types.Feature, path: list = []):
     new_path = path
-    print(new_path)
     for field in fields(feature):
-        print(field.name)
         if field.name == "parent":
             continue
         attr = getattr(feature, field.name)
