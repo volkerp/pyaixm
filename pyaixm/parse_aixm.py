@@ -11,11 +11,29 @@ def replace_xlinks(features: list):
     "Replaces XLink references on all features with the referenced object"
     for feature in features:
         if isinstance(feature, aixm_types.Feature):
-            for field in fields(feature):
-                attr = getattr(feature, field.name)
-                if isinstance(attr, aixm_types.XLink):
-                    if attr.target is not None:
-                        setattr(feature, field.name, attr.target)
+            replace_xlinks_r(feature)
+
+
+def replace_xlinks_r(feature: aixm_types.Feature, path: list = []):
+    new_path = path
+    print(new_path)
+    for field in fields(feature):
+        print(field.name)
+        if field.name == "parent":
+            continue
+        attr = getattr(feature, field.name)
+        if isinstance(attr, list):
+            for a in attr:
+                if isinstance(a, aixm_types.Feature):
+                   replace_xlinks_r(a, path=new_path + [a.gmlid])
+        if isinstance(attr, aixm_types.Feature):
+            if attr.gmlid in path:
+                continue
+            new_path.append(attr.gmlid)
+            replace_xlinks_r(feature, path=new_path)
+        if isinstance(attr, aixm_types.XLink):
+            if attr.target is not None:
+                setattr(feature, field.name, attr.target)
 
 
 def parse(f: typing.IO | list[typing.IO], resolve_xlinks = False) -> list:
