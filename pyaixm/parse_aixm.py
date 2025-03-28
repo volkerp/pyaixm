@@ -18,13 +18,22 @@ def replace_xlinks(features: list):
                         setattr(feature, field.name, attr.target)
 
 
-def parse(f: typing.IO, resolve_xlinks = False) -> list:
-    context = etree.iterparse(f)
+def parse(f: typing.IO | list[typing.IO], resolve_xlinks = False) -> list:
     l = []
-    for action, elem in context:
-        if action == 'end' and elem.tag in ['{http://www.aixm.aero/schema/5.1.1/message}hasMember', '{http://www.aixm.aero/schema/5.1/message}hasMember']:
-            feature = aixm_types.parse_feature(elem[0])  # first child of 'hasMember' is aixm feature
-            l.append(feature)
+    if isinstance(f, list):
+        for g in f:
+            context = etree.iterparse(g)
+            for action, elem in context:
+                if action == 'end' and elem.tag in ['{http://www.aixm.aero/schema/5.1.1/message}hasMember', '{http://www.aixm.aero/schema/5.1/message}hasMember']:
+                    feature = aixm_types.parse_feature(elem[0])  # first child of 'hasMember' is aixm feature
+                    l.append(feature)
+
+    else:
+        context = etree.iterparse(f)
+        for action, elem in context:
+            if action == 'end' and elem.tag in ['{http://www.aixm.aero/schema/5.1.1/message}hasMember', '{http://www.aixm.aero/schema/5.1/message}hasMember']:
+                feature = aixm_types.parse_feature(elem[0])  # first child of 'hasMember' is aixm feature
+                l.append(feature)
 
     aixm_types.XLink.resolve()
 
