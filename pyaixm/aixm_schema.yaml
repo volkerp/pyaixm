@@ -521,6 +521,9 @@ GuidanceLineMarking:
   markingICAOStandard: CodeYesNoType
   condition: CodeMarkingConditionType
 
+LandingTakeoffAreaCollection:
+  runway: Runway
+
 LightActivation:
   clicks: NoNumberType
   intensityLevel: CodeLightIntensityType
@@ -821,13 +824,17 @@ ContactInformation:
   address: PostalAddress
   phoneFax: TelephoneContact
 
-ElevatedPoint:
+Point: &Point
   pos: str
+  horizontalAccuracy: str
+  annotation: str
+
+ElevatedPoint:
+  <<: *Point
   elevation: str
   geoidUndulation: str
   verticalDatum: str
   verticalAccuracy: str
-  horizontalAccuracy: str
 
 ElevatedSurface:
   elevation: ValDistanceVerticalType
@@ -1021,6 +1028,8 @@ DesignatedPoint:
   designator: CodeDesignatedPointDesignatorType
   type: CodeDesignatedPointType
   name: TextNameType
+  location: Point
+  airportHeliport: AirportHeliport
 
 DME:
   <<: *NavaidEquipment
@@ -1321,6 +1330,10 @@ Service: &Service
   availability: ServiceOperationalStatus
   groundCommunication: ContactInformation
 
+CallsignDetail:
+  callSign: TextNameType
+  language: CodeLanguageType
+
 TrafficSeparationService: &TrafficSeparationService
   <<: *Service
   radarAssisted: CodeYesNoType
@@ -1517,11 +1530,3 @@ SecondarySurveillanceRadar:
 
 SurveillanceGroundStation:
   videoMap: CodeYesNoType
-
-##################
-##  Approaches  ##
-##################
-
-InstrumentApproachProcedure:
-  type: CodeInstrumentApproachProcedureType
-  name: TextNameType
