@@ -823,7 +823,6 @@ ContactInformation:
 
 ElevatedPoint:
   pos: str
-  annotation: str
   elevation: str
   geoidUndulation: str
   verticalDatum: str
@@ -1022,8 +1021,6 @@ DesignatedPoint:
   designator: CodeDesignatedPointDesignatorType
   type: CodeDesignatedPointType
   name: TextNameType
-  location: Point
-  airportHeliport: AirportHeliport
 
 DME:
   <<: *NavaidEquipment
