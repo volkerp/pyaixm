@@ -11,6 +11,10 @@ def default(obj):
 
 
 if __name__ == '__main__':
-    f = open(sys.argv[1], mode='rb')
-    d = parse(f)
+    files = sys.argv[1:]
+    if not files:
+        print("Please provide one or more filenames as command line arguments.")
+        sys.exit(1)
+
+    d = parse(files, resolve_xlinks=True)
     json.dump(d, sys.stdout, ensure_ascii=False, default=default, sort_keys=True, indent=4)

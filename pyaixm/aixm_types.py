@@ -106,6 +106,9 @@ class GMLGeodesicString:
 
     def dict(self):
         return { 'pos': self.pos }
+    
+    def to_json(self):
+        return { 'GMLGeodesicString': self.dict() }
 
 
 @dataclass
